@@ -1567,24 +1567,13 @@ public class PduParser {
                                 .android.internal.R.bool.config_mms_content_disposition_support);
 
                         if (contentDisposition) {
-                            int len = -1;
-			    boolean validDispositionLength = true;
-			    pduDataStream.mark(1);
-			    
-			    try {
-				len = parseValueLength(pduDataStream);
-			    } catch (RuntimeException e){
-				len = 31;
-				validDispositionLength = false;
-				pduDataStream.reset();
-			    }
-				
+                            int len = parseValueLength(pduDataStream);
                             pduDataStream.mark(1);
                             int thisStartPos = pduDataStream.available();
                             int thisEndPos = 0;
                             int value = pduDataStream.read();
 
-                            if (validDispositionLength) {
+                            if (value == PduPart.P_DISPOSITION_FROM_DATA ) {
                                 part.setContentDisposition(PduPart.DISPOSITION_FROM_DATA);
                             } else if (value == PduPart.P_DISPOSITION_ATTACHMENT) {
                                 part.setContentDisposition(PduPart.DISPOSITION_ATTACHMENT);
